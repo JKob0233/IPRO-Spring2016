@@ -18,7 +18,8 @@ def iupac( SMILES ):
 def MOL( SMILES ):
     molfile = None
     try:
-        molfile = cirpy.resolve( SMILES, 'mol' )
+        os.system('./balloon -f MMFF94.mff --nconfs 1 --noGA "%s" molecule.mol' %SMILES)
+        molfile = 'molecule.mol'
     except HTTPError, e:
         print "HTTPError: %s "%e.code
     except URLError, e:
@@ -37,11 +38,7 @@ if __name__=='__main__':
     args = parser.parse_args()
     molfile = MOL( args.SMILES )
     if not molfile == None:
-        name = iupac( args.SMILES )
-        filename = name + '.mol' if not name==None else args.SMILES+'.mol'
-        with open( filename, 'w+' ) as infile:
-            infile.write( molfile )
-        pymol_show( filename )
+	pymol_show(molfile)        
     else:
         print 'SMILES string cannot be resolved'
 
